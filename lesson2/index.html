@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lesson 2</title>
+</head>
+<body>
+<!--insertAdjacentHTML-->
+<!--beforebegin-->
+<p>
+<!--afterbegin-->
+    <span></span>
+<!--beforeend-->
+</p>
+<!--afterend-->
+<script>
+    // var user = {
+    //     name: 'Ann',
+    //     yearOfBirth: 1990,
+    // };
+
+    // function Person(name, yearOfBirth) {
+    //     this.name = name;
+    //     this.yearOfBirth = yearOfBirth;
+    //     // this.calcAge = function () {
+    //     //     return new Date().getFullYear() - this.yearOfBirth;
+    //     // };
+    //     // console.log(this.calcAge())
+    // }
+    //
+    // Person.prototype.calcAge = function () {
+    //     return new Date().getFullYear() - this.yearOfBirth;
+    // };
+    //
+    // function Teacher(name, yearOfBirth, subject) {
+    //     Person.call(this, name, yearOfBirth);
+    //     this.subject = subject;
+    // }
+    //
+    // Teacher.prototype = Object.create(Person.prototype);
+    // Teacher.prototype.constructor = Teacher;
+    //
+    // var vasya = new Person('Vasya', 1985);
+    // var ann = new Teacher('Ann', 1990, 'Math');
+
+    class Person {
+        constructor(name, yearOfBirth) {
+            this.name = name;
+            this.yearOfBirth = yearOfBirth;
+        }
+
+        calcAge() {
+            return new Date().getFullYear() - this.yearOfBirth;
+        };
+    }
+
+    class Teacher extends Person {
+        constructor(name, yearOfBirth, subject) {
+            super(name, yearOfBirth);
+            this.subject = subject;
+        }
+
+        static triple(x = 1) {
+            return x * 3;
+        }
+    }
+
+    const vasya = new Person('Vasya', 1985);
+    const ann = new Teacher('Ann', 1990, 'Math');
+</script>
+</body>
+</html>
