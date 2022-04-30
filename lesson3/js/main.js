@@ -2,20 +2,38 @@ const API =
   "https://raw.githubusercontent.com/GeekBrainsTutorial/online-store-api/master/responses";
 // переписать на промис (!!!!!!!не fetch !!!!!!!!!!)
 // Далее НЕ ИСПОЛЬЗОВАТЬ В КОДЕ!
-let getRequest = (url, cb) => {
-  let xhr = new XMLHttpRequest();
-  xhr.open("GET", url, true);
-  xhr.onreadystatechange = () => {
-    if (xhr.readyState === 4) {
-      if (xhr.status !== 200) {
-        console.log("Error");
+// let getRequest = (url, cb) => {
+//   let xhr = new XMLHttpRequest();
+//   xhr.open("GET", url, true);
+//   xhr.onreadystatechange = () => {
+//     if (xhr.readyState === 4) {
+//       if (xhr.status !== 200) {
+//         console.log("Error");
+//       } else {
+//         cb(xhr.responseText);
+//       }
+//     }
+//   };
+//   xhr.send();
+// };
+
+const getRequest = (url) =>
+  new Promise(function (resolve, reject) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", url);
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        resolve(xhr.response);
       } else {
-        cb(xhr.responseText);
+        reject(Error(xhr.statusText));
       }
-    }
-  };
-  xhr.send();
-};
+    };
+    xhr.onerror = function () {
+      reject(Error("error fetching JSON data"));
+    };
+    xhr.send();
+  });
+
 // ---------------------------------
 
 class ProductList {
@@ -25,26 +43,13 @@ class ProductList {
     this.productObjects = [];
 
     this.fetchGoods();
-    this.render();
-
-    this.getProducts().then((data) => {
-      this.goods = data;
-      this.render();
-    });
   }
 
   fetchGoods() {
-    getRequest(`${API}/catalogData.json`, (data) => {
-      console.log(data);
+    getRequest(`${API}/catalogData.json`).then((data) => {
       this.goods = JSON.parse(data);
       this.render();
     });
-  }
-
-  getProducts() {
-    return fetch(`${API}/catalogData.json`)
-      .then((response) => response.json())
-      .catch((err) => console.log(err));
   }
 
   render() {
