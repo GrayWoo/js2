@@ -138,9 +138,9 @@ class Cart {
     itemBtns.forEach((el) => {
       el.addEventListener("click", (e) => {
         const id = +e.currentTarget.id.replace(/[^0-9]/g, "");
-        const iclude = this.checkInCart(id);
+        const include = this.checkInCart(id);
 
-        if (iclude) return;
+        if (include) return;
 
         this.addToCart(id);
       });
