@@ -49,6 +49,7 @@ class ProductList {
     getRequest(`${API}/catalogData.json`).then((data) => {
       this.goods = JSON.parse(data);
       this.render();
+      new Cart(this.goods);
     });
   }
 
@@ -78,9 +79,78 @@ class ProductItem {
                 <div class="desc">
                     <h3>${this.title}</h3>
                     <p>${this.price} \u20bd</p>
-                    <button class="buy-btn">Купить</button>
+                    <button class="buy-btn" id="product-btn${this.id}">Купить</button>
                 </div>
             </div>`;
+  }
+}
+
+class Cart {
+  constructor(goods) {
+    this.cart = document.querySelector(".cart__list");
+    this.goods = goods;
+    this.cartProducts = [];
+
+    this.addEvents();
+  }
+
+  checkInCart(id) {
+    return this.cartProducts.find((el) => el.id_product === id);
+  }
+
+  addToCart(id) {
+    const product = this.goods.find((el) => el.id_product === id);
+    this.cartProducts.push(product);
+
+    this.createProductElment(product);
+  }
+
+  deleteFromCart(id) {
+    const index = this.cartProducts.findIndex((el) => el.id_product === id);
+    if (index !== -1) this.cartProducts.splice(index, 1);
+  }
+
+  getProductsInCart() {
+    return this.cartProducts;
+  }
+
+  createProductElment(product) {
+    const deleteEl = (e) => {
+      e.currentTarget.parentNode.remove();
+      this.deleteFromCart(product.id_product);
+    };
+
+    const li = document.createElement("li");
+    li.innerText = `${product.id_product} ${product.product_name} ${product.price}`;
+
+    const button = document.createElement("button");
+    button.innerHTML = "&#9587";
+    button.onclick = deleteEl;
+
+    li.appendChild(button);
+
+    this.cart.appendChild(li);
+  }
+
+  addEvents() {
+    const itemBtns = document.querySelectorAll(".buy-btn");
+
+    itemBtns.forEach((el) => {
+      el.addEventListener("click", (e) => {
+        const id = +e.currentTarget.id.replace(/[^0-9]/g, "");
+        const iclude = this.checkInCart(id);
+
+        if (iclude) return;
+
+        this.addToCart(id);
+      });
+    });
+
+    const cartContainer = document.querySelector(".cart");
+
+    document
+      .querySelector(".btn-cart")
+      .addEventListener("click", () => cartContainer.classList.toggle("hidden"));
   }
 }
 
