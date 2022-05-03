@@ -56,6 +56,7 @@ class ProductList {
   render() {
     for (const good of this.goods) {
       const productObject = new ProductItem(good);
+      console.log(productObject);
       this.productObjects.push(productObject);
 
       this.container.insertAdjacentHTML("beforeend", productObject.getHTMLString());
@@ -90,64 +91,37 @@ class Cart {
     this.goods = goods;
     this.cartProducts = [];
 
-    this.getBasket();
     this.addEvents();
   }
 
-  async getBasket() {
-    const request = await fetch(`${API}/getBasket.json`);
-    if (!request.ok) return;
-
-    const response = await request.json();
-    this.cartProducts = response.contents;
-    for (let i = 0; i < this.cartProducts.length; i++) {
-      this.createProductElment(this.cartProducts[i]);
-    }
-  }
-
   checkInCart(id) {
-    return this.cartProducts.findIndex((el) => el.id_product === id);
+    return this.cartProducts.find((el) => el.id_product === id);
   }
 
-  async addToCart(id) {
-    const request = await fetch(`${API}/addToBasket.json`);
-    if (!request.ok) {
-      return;
-    }
+  addToCart(id) {
+    const product = this.goods.find((el) => el.id_product === id);
+    this.cartProducts.push(product);
 
-    const response = await request.json();
-    console.log(
-      "Не совсем понятно как это должно работать если на стороне бэка стоит Мок! А на метод пост выдаёт 403. Методичка к ДЗ не очевидна! Результат запроса на добавление:",
-      response.result
-    );
-
-    const index = this.checkInCart(id);
-    if (index !== -1) this.cartProducts[index].quantity++;
-    this.rerender();
+    this.createProductElment(product);
   }
 
-  async deleteFromCart(id) {
-    const request = await fetch(`${API}/deleteFromBasket.json`);
-    if (!request.ok) {
-      return;
-    }
+  deleteFromCart(id) {
+    const index = this.cartProducts.findIndex((el) => el.id_product === id);
+    if (index !== -1) this.cartProducts.splice(index, 1);
+  }
 
-    const response = await request.json();
-    console.log(
-      "Не совсем понятно как это должно работать если на стороне бэка стоит Мок! А на метод пост выдаёт 403. Методичка к ДЗ не очевидна! Результат запроса на удаление:",
-      response.result
-    );
-
-    const index = this.checkInCart(id);
-    if (index !== -1) this.cartProducts[index].quantity--;
-    this.rerender();
+  getProductsInCart() {
+    return this.cartProducts;
   }
 
   createProductElment(product) {
-    const deleteEl = (e) => this.deleteFromCart(product.id_product);
+    const deleteEl = (e) => {
+      e.currentTarget.parentNode.remove();
+      this.deleteFromCart(product.id_product);
+    };
 
     const li = document.createElement("li");
-    li.innerText = `${product.id_product} ${product.product_name} ${product.price} кол-во: ${product.quantity}`;
+    li.innerText = `${product.id_product} ${product.product_name} ${product.price}`;
 
     const button = document.createElement("button");
     button.innerHTML = "&#9587";
@@ -158,20 +132,16 @@ class Cart {
     this.cart.appendChild(li);
   }
 
-  rerender() {
-    const old = document.querySelector("ol");
-    old.innerHTML = "";
-    for (let i = 0; i < this.cartProducts.length; i++) {
-      if (this.cartProducts[i].quantity > 0) this.createProductElment(this.cartProducts[i]);
-    }
-  }
-
   addEvents() {
     const itemBtns = document.querySelectorAll(".buy-btn");
 
     itemBtns.forEach((el) => {
       el.addEventListener("click", (e) => {
         const id = +e.currentTarget.id.replace(/[^0-9]/g, "");
+        const include = this.checkInCart(id);
+
+        if (include) return;
+
         this.addToCart(id);
       });
     });
