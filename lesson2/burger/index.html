@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div style="display: grid; flex-direction: column; width: 350px">
+      <div>
+        <input type="radio" name="size" id="big" checked value="big" />
+        <label for="big">Большой 100р 40кл</label>
+      </div>
+      <div>
+        <input type="radio" name="size" id="small" value="small" />
+        <label for="small">Маленький 50р 20кл</label>
+      </div>
+
+      <select name="" id="type">
+        <option value="cheese" selected="selected">Сыр 10р 20кл</option>
+        <option value="salad">Салат 20р 5кл</option>
+        <option value="potato">Картофель 15р 10кл</option>
+      </select>
+
+      <div>
+        <input type="checkbox" name="adds" id="spice" value="spice" />
+        <label for="spice">Специи 15р 0кл</label>
+      </div>
+      <div>
+        <input type="checkbox" name="adds" id="mayonnaise" value="mayonnaise" />
+        <label for="mayonnaise">Майонез 20р 5кл</label>
+      </div>
+
+      <span id="res"></span>
+    </div>
+  </body>
+  <script src="script.js"></script>
+</html>
