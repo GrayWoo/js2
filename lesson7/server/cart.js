@@ -3,17 +3,18 @@ const add = (cart, req) => {
   return JSON.stringify(cart, null, 4);
 };
 const change = (cart, req) => {
-  const find = cart.contents.find(el => el.id_product === +req.params.id);
-  find.quantity += req.body.quantity;
+  const find = cart.contents.find((el) => el.id_product === +req.params.id);
+  find.quantity = req.body.quantity;
   return JSON.stringify(cart, null, 4);
 };
 const del = (cart, req) => {
-  const find = cart.contents.find(el => el.id_product === +req.params.id);
-  find.quantity += req.body.quantity;
+  const i = cart.contents.findIndex((el) => el.id_product === +req.params.id);
+  cart.contents.splice(i, 1);
   return JSON.stringify(cart, null, 4);
 };
 
 module.exports = {
   add,
   change,
+  del,
 };
